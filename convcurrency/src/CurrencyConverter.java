@@ -25,7 +25,7 @@ public class CurrencyConverter {
     private JLabel thresholdLabel;
 
     private Map<String, Double> exchangeRates = new HashMap<>();
-    private final String[] EU_CURRENCIES = {"EUR", "PLN", "CZK", "HUF", "SEK", "DKK", "BGN", "RON"}; // Example EU currencies
+    private final String[] EU_CURRENCIES = {"ALL", "AMD", "AZN", "BAM", "BGN", "BYN", "CHF", "CZK", "DKK", "EUR", "GBP", "GEL", "HUF", "ISK", "KZT", "MDL", "MKD", "NOK", "PLN", "RON", "RUB", "RSD", "SEK", "TRY", "UAH"}; // Updated list of European currencies, includes non-Eurozone
     private static final String ECB_RATES_URL = "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml";
 
     public static void main(String[] args) {

@@ -60,3 +60,28 @@ A window for the Currency Converter application should appear.
 - The application requires an active internet connection on first launch (and whenever rates need to be updated, currently on every launch) to fetch the latest exchange rates from the ECB. If it cannot connect, an error message will be displayed.
 - The list of base currencies is predefined. The list of target currencies is dynamically populated from the ECB data.
 - The paths in the commands above are specific to the user's request. Adjust them if your project is in a different location.
+
+## How to Update the Application
+
+If you make any changes to the source code in the `src` directory (for example, if you modify `CurrencyConverter.java` to update the list of base currencies or change any functionality), you will need to recompile the application for these changes to take effect.
+
+Follow these steps to recompile:
+
+1.  **Open a Command Prompt or Terminal.**
+
+2.  **Navigate to the project directory:**
+    ```bash
+    cd C:\Users\roy_b\Documents\GitHub\convcurrency
+    ```
+
+3.  **Run the compilation command:**
+    ```bash
+    javac -d out -cp src src/CurrencyConverter.java
+    ```
+    This will update the compiled `.class` files in the `out` directory with your changes.
+
+After successful compilation, you can run the application as before using:
+    ```bash
+    java -cp out CurrencyConverter
+    ```
+The updated application will then launch.
