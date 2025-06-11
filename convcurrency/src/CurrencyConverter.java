@@ -25,7 +25,7 @@ public class CurrencyConverter {
     private JLabel thresholdLabel;
 
     private Map<String, Double> exchangeRates = new HashMap<>();
-    private final String[] EU_CURRENCIES = {"ALL", "AMD", "AZN", "BAM", "BGN", "BYN", "CHF", "CZK", "DKK", "EUR", "GBP", "GEL", "HUF", "ISK", "KZT", "MDL", "MKD", "NOK", "PLN", "RON", "RUB", "RSD", "SEK", "TRY", "UAH"}; // Updated list of European currencies, includes non-Eurozone
+    private final String[] EU_CURRENCIES = {"AMD", "AZN", "BAM", "BGN", "BYN", "CHF", "CZK", "DKK", "EUR", "GBP", "GEL", "HUF", "ISK", "KZT", "MDL", "MKD", "NOK", "PLN", "RON", "RUB", "RSD", "SEK", "TRY", "UAH"}; // Updated list of European currencies, excludes ALL
     private static final String ECB_RATES_URL = "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml";
 
     public static void main(String[] args) {
@@ -249,12 +249,45 @@ public class CurrencyConverter {
                     // Update UI components on the Event Dispatch Thread
                     SwingUtilities.invokeLater(() -> {
                         targetCurrencyComboBox.removeAllItems(); // Clear previous/dummy items
-                        for (String currencyCode : exchangeRates.keySet()) {
-                            targetCurrencyComboBox.addItem(currencyCode);
+
+                        // Populate with the filtered list of European currencies
+                        // that are also present in the fetched ECB rates.
+                        // EU_CURRENCIES array is already updated to exclude "ALL".
+                        for (String currencyCode : EU_CURRENCIES) {
+                            if (exchangeRates.containsKey(currencyCode)) { // Ensure ECB provides this currency
+                                targetCurrencyComboBox.addItem(currencyCode);
+                            } else if (currencyCode.equals("EUR")) {
+                                // EUR should always be addable even if not explicitly in ECB 'Cube currency=' list,
+                                // as it's the base. exchangeRates map has it added manually.
+                                targetCurrencyComboBox.addItem("EUR");
+                            }
                         }
-                        // Optionally, select a default target currency, e.g., USD if available
-                        if (exchangeRates.containsKey("USD")) {
-                            targetCurrencyComboBox.setSelectedItem("USD");
+
+                        // Optionally, select a default target currency, e.g., USD if available AND in EU_CURRENCIES
+                        // Or better, select EUR or the first item if available.
+                        if (targetCurrencyComboBox.getItemCount() > 0) {
+                             boolean hasUSD = false; // USD is not in EU_CURRENCIES, this check is moot for USD.
+                             // Check if "USD" is in the EU_CURRENCIES array (it's not, per recent updates)
+                             // for(int i=0; i<EU_CURRENCIES.length; i++) {
+                             //    if(EU_CURRENCIES[i].equals("USD")) {
+                             //        hasUSD = true;
+                             //        break;
+                             //    }
+                             // }
+
+                             // Since USD is not in the European list, let's pick EUR if available, or the first one.
+                             boolean hasEUR = false;
+                             for(int i=0; i<targetCurrencyComboBox.getItemCount(); i++) {
+                                 if(targetCurrencyComboBox.getItemAt(i).equals("EUR")) {
+                                     hasEUR = true;
+                                     break;
+                                 }
+                             }
+                            if (hasEUR) {
+                                targetCurrencyComboBox.setSelectedItem("EUR");
+                            } else {
+                                targetCurrencyComboBox.setSelectedIndex(0); // Select the first available currency
+                            }
                         }
                     });
                 } else {
